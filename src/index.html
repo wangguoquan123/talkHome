@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	 <!-- 引入socket.io.js文件 -->
+    
+	<style>
+      	* { margin: 0; padding: 0; box-sizing: border-box; }
+      	input{
+      		margin:0;
+      		padding:0;
+      	}
+      	.containerBox{
+      		position: relative;
+	      	width:400px;
+	      	height:600px;
+	      	margin:20px auto;
+	      	border:1px solid red;
+	      	border-radius: 20px;
+	      	background: #fffbf4;
+	      	display: flex;
+	      	flex-direction: column;
+	      	align-items: center;
+	      	justify-content: space-between;
+      	}
+	    #messages{
+	      	width:380px;
+	      	height:500px;
+	      	display: flex;
+	      	flex-direction: column;
+	      	overflow-y: auto;
+	    }
+	    .otherSend{
+	    	display: flex;
+	    	justify-content: flex-start;
+	    	align-items: center;
+	    	margin-top:30px;
+	      	height: 30px;
+	    }
+	    .userSend{
+	    	display: flex;
+	    	align-items: center;
+	    	justify-content: flex-end;
+	    	margin-left:20px;
+	      	height: 30px;
+	      	margin-top:30px;
+	    }
+	    .userSend .textStyle{
+	    	min-width: 100px;
+	      	max-width:200px;
+	      	padding:10px 20px;
+	      	background: #f00;
+	      	color:#000;
+	      	border-radius: 8px;
+	    }
+	    .otherSend .textStyle{
+	    	min-width: 100px;
+	      	max-width:200px;
+	      	padding:10px 20px;
+	      	background: #f06250;
+	      	color:#000;
+	      	border-radius: 8px;
+	    }
+	    .userSendText{
+	    	width:380px;
+	    	height:80px;
+	    	display: flex;
+	    	align-items: center;
+	    	position: absolute;
+	    	bottom:10px;
+	    }
+	    #txtInp{
+	    	width:300px;
+	    	padding:10px 20px;
+	    	outline: none;
+	    	border:1px solid green;
+	    	line-height: 40px;
+	    	font-size:14px;
+	    }
+	    #sendBtn{
+	    	flex-grow: 1;
+	    	height: 60px;
+	    	outline: none;
+	    	background: green;
+	    	border:1px solid green;
+	    	color:#fff;
+	    	font-size:16px;
+	    	cursor : pointer;
+	    }
+    </style>
+    <script src="https://cdn.bootcss.com/socket.io/4.0.0/socket.io.js"></script>
+</head>
+<body>
+	<div class="containerBox">
+		<ul id="messages"></ul>
+	    <div class="userSendText">
+	    	<input type="text" id="txtInp">
+	    	<button id="sendBtn">发送</button>
+	    </div>
+	</div>
+    <script>
+    	// 这样就加载了 socket.io-client。 socket.io-client 暴露了一个 io 全局变量，然后连接服务器。
+    	// 请注意我们在调用 io() 时没有指定任何 URL，因为它默认将尝试连接到提供当前页面的主机。重新
+    	// 加载服务器和网站，你将看到控制台打印出 “a user connected”。
+    	let socket = io();
+
+    	window.onload = function(){
+    		let btn = document.getElementById('sendBtn');
+    		let inp = document.getElementById('txtInp');
+    		let oUl = document.getElementById('messages');
+
+
+    		btn.onclick = function(){
+    			socket.emit('massge',inp.value);
+    			let oLi = document.createElement('li');
+    			oLi.className = 'userSend';
+    			let ospan = document.createElement('span');
+    			ospan.innerHTML = inp.value;
+    			ospan.className = 'textStyle';
+    			oLi.appendChild(ospan);
+    			oUl.appendChild(oLi);
+    			inp.value = '';
+    		}
+
+    		socket.on('massge',str =>{
+    			let oLi = document.createElement('li');
+    			oLi.className = 'otherSend';
+    			let ospan = document.createElement('span');
+    			ospan.innerHTML = str;
+    			ospan.className = 'textStyle';
+    			oLi.appendChild(ospan);
+    			oUl.appendChild(oLi);
+    		})
+
+    	}
+    </script>
+</body>
+</html>
